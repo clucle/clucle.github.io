@@ -52,6 +52,56 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2017-05-18T05:17:51.000Z"><a href="/2017/05/18/MVP-Pattern-Android/">2017-05-18</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2017/05/18/MVP-Pattern-Android/">MVP-Pattern-Android</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>MVP Pattern 이란 MVC 아키텍처 패턴에서 파생된 것으로 User Interface를 작성하는데 사용된다. MVP는 (Model-View-Presenter)의 약자이다. 기존에 작성했던 소스를 예시로 MVP Pattern의 예시를 들어보려고 한다. 소스코드는 링크를 첨부한다. <a href="https://github.com/clucle/Android/tree/master/MVP_pattern_tutor" target="_blank" rel="external">source</a></p>
+<h1 id="MVP-Pattern-flow"><a href="#MVP-Pattern-flow" class="headerlink" title="MVP Pattern flow"></a>MVP Pattern flow</h1><p><img src="https://cloud.githubusercontent.com/assets/8114204/26189814/76086bd8-3be1-11e7-8ba4-ca693fe8c189.png" alt="flow"></p>
+<p>위의 그림을 토대로 설명을 해보겠다.</p>
+<h3 id="View"><a href="#View" class="headerlink" title="View"></a>View</h3><p>MVP Pattern에서 View란 activity 혹은 Fragment 에서 사용자가 보고있는 화면을 의미한다. View를 보는 사용자는 굳이 내부에서 실행 될 로직이나, 변수에는 전혀 의존성 없이 할 행동만 있으면 된다.</p>
+<h3 id="Presenter"><a href="#Presenter" class="headerlink" title="Presenter"></a>Presenter</h3><p>Presenter 란 View와 Model 사이를 연결해주는 곳이다. View에서 User의 Action이 들어오면 데이터에 의존성이 있다면 데이터를 수정하고 없다면 데이터를 수정 하지 않는다. User Action 에 맞는 Method를 실행하고 View에 모든 명령을 다 처리 한 후 사용자에게 보여질 View를 udpate 해준다.</p>
+<h3 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h3><p>Model 이란 사용자 저장되어 있는 정보가 필요 할 때 사용한다. 예를 들면 사람 정보를 저장한다고 하면, 사람에 관한 데이터를 DB로 저장하던지 Local 변수로 저장 할 것이다.</p>
+<h1 id="Simple-source"><a href="#Simple-source" class="headerlink" title="Simple source"></a>Simple source</h1><p>이 소스는 View에서 사용자의 입력을 받아 Model(user) 에 이름을 저장하는 간단한 예제이다.</p>
+<h3 id="Presenter-1"><a href="#Presenter-1" class="headerlink" title="Presenter"></a>Presenter</h3><p>Presenter 부터 살펴보자. Presenter 는 Model과 View 모두 연결 되있다. <strong>Presenter에 View라는 interface를 만들어두고 View에서 Presenter.View를 implements 하는 것으로 View에서 rendering 될 View에대한 Method를 override할 의무를 준다.</strong> updateName 은 View에서 사용자가 요청할 Method이고 요청이 들어오면 Model에 데이터를 저장하고 View에 update를 요청한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public class MainPresenter &#123;</div><div class="line">    private User user;</div><div class="line">    private View view;</div><div class="line"></div><div class="line">    public MainPresenter(View view) &#123;</div><div class="line">        this.view = view;</div><div class="line">        user = new User();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void updateName(String name) &#123;</div><div class="line">        user.setName(name);</div><div class="line">        view.updateUserInfoTextView(user.toString());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public interface View &#123;</div><div class="line">        void updateUserInfoTextView(String info);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Model-1"><a href="#Model-1" class="headerlink" title="Model"></a>Model</h3><p>Model 에서는 사용자가 필요한 정보를 저장할 class가 필요하다<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class User &#123;</div><div class="line"></div><div class="line">    private String name;</div><div class="line"></div><div class="line">    public void setName(String name) &#123;</div><div class="line">        this.name = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public String toString() &#123;</div><div class="line">        return &quot;Name : &quot; + name;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="View-1"><a href="#View-1" class="headerlink" title="View"></a>View</h3><p>View 에서는 Presenter의 View를 implements받아 View에서 사용해야 하는 Method를 override 한다. onCreate시 presenter를 등록 해 주고, 사용자의 행동은 Presenter로 보내준다. 여기에서는 text가 변경 될 때 Presenter에 사용자의 행동을 보낸다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">public class MainActivity extends AppCompatActivity implements MainPresenter.View&#123;</div><div class="line"></div><div class="line">    private MainPresenter mainPresenter;</div><div class="line"></div><div class="line">    private TextView userInfoTextView;</div><div class="line">    private EditText name;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        mainPresenter = new MainPresenter(this);</div><div class="line"></div><div class="line">        userInfoTextView = (TextView) findViewById(R.id.userInfo);</div><div class="line">        name = (EditText) findViewById(R.id.name);</div><div class="line"></div><div class="line">        name.addTextChangedListener(new TextWatcher() &#123;</div><div class="line">            @Override</div><div class="line">            public void beforeTextChanged(CharSequence s, int start, int count, int after) &#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            @Override</div><div class="line">            public void onTextChanged(CharSequence s, int start, int before, int count) &#123;</div><div class="line">                mainPresenter.updateName(s.toString());</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            @Override</div><div class="line">            public void afterTextChanged(Editable s) &#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void updateUserInfoTextView(String info) &#123;</div><div class="line">        userInfoTextView.setText(info);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="MVP-Pattern-후기"><a href="#MVP-Pattern-후기" class="headerlink" title="MVP-Pattern 후기"></a>MVP-Pattern 후기</h2><ul>
+<li><p>사용자 입장과 개발자 입장을 나누어서 볼 수 있다는 점이 편한 것 같다.</p>
+</li>
+<li><p>다른 여러 디자인 패턴에 대한 정보도 궁금하다.</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2017-05-10T16:18:14.000Z"><a href="/2017/05/11/data-binding-butterknife/">2017-05-11</a></time>
       
       
@@ -240,7 +290,7 @@
   
     <li><a href="/tags/Hexo/">Hexo</a><small>1</small></li>
   
-    <li><a href="/tags/android/">android</a><small>1</small></li>
+    <li><a href="/tags/android/">android</a><small>2</small></li>
   
   </ul>
 </div>
