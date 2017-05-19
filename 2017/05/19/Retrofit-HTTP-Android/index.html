@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Retrofit-HTTP-Android | clucle&#39;s blog</title>
+  <meta name="author" content="Dujin Jung">
+  
+  <meta name="description" content="두찡의 일상">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Retrofit-HTTP-Android"/>
+  <meta property="og:site_name" content="clucle&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="clucle&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">clucle&#39;s blog</a></h1>
+  <h2><a href="/">두찡의 프로그래밍</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-05-19T07:00:03.000Z"><a href="/2017/05/19/Retrofit-HTTP-Android/">2017-05-19</a></time>
+      
+      
+  
+    <h1 class="title">Retrofit-HTTP-Android</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Retrofit 은 안드로이드와 자바에서 HTTP client 에서 REST API통신을 하기 위한 라이브러리이다. <a href="http://square.github.io/retrofit/" target="_blank" rel="external">공식 홈페이지</a>. 이번에는 간단한 node server와 android client 의 HTTP 통신을 하는 간단한 예제를 소개하려고 한다. 소스코드는 <a href="https://github.com/clucle/Android/tree/master/Retrofit_tutor" target="_blank" rel="external">link</a>를 첨부한다. <strong>server repository에는 node server가 들어있고, client repository에는 android client가 들어있다.</strong></p>
+<p>이 글에서는 Server 보다는 Retrofit 에 집중 하므로 서버에 관한 내용은 간단하게만 소개한다.</p>
+<h1 id="Server"><a href="#Server" class="headerlink" title="Server"></a>Server</h1><p>Server는 nodejs로 작성 할 필요는 없다. 단지 HTTP 통신을 확인하기 위한 소스이다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</div><div class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> app = express();</div><div class="line"></div><div class="line"><span class="keyword">var</span> bodyParser = <span class="built_in">require</span>(<span class="string">'body-parser'</span>);</div><div class="line"></div><div class="line"><span class="comment">// parse JSON inputs</span></div><div class="line">app.use(bodyParser.json());</div><div class="line"><span class="comment">// parse URL encoded inputs</span></div><div class="line">app.use(bodyParser.urlencoded());</div><div class="line"></div><div class="line">app.set(<span class="string">'port'</span>, process.env.PORT || <span class="number">3000</span>);</div><div class="line"></div><div class="line">app.get(<span class="string">'/'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">	res.sendFile(__dirname + <span class="string">'/index.html'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">app.post(<span class="string">'/ping'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">	res.status(<span class="number">200</span>).send(<span class="string">"pong"</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">app.post(<span class="string">'/user/one'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">	<span class="keyword">if</span> (req.body.name == <span class="string">"clucle"</span>) &#123;</div><div class="line">		res.status(<span class="number">200</span>).send(&#123;<span class="attr">name</span>: <span class="string">'clucle'</span>, <span class="attr">age</span>: <span class="number">23</span>&#125;);</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span>(req.body.name == <span class="string">"junsu"</span>) &#123;</div><div class="line">		res.status(<span class="number">200</span>).send(&#123;<span class="attr">name</span>: <span class="string">'junsu'</span>, <span class="attr">age</span>: <span class="number">25</span>&#125;);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		res.status(<span class="number">404</span>).send(<span class="string">"ERROR"</span>);</div><div class="line">	&#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">app.post(<span class="string">'/user/list'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">	res.status(<span class="number">200</span>).send(&#123;<span class="attr">users</span>: [</div><div class="line">		&#123;<span class="attr">name</span>: <span class="string">'clucle'</span>, <span class="attr">age</span>: <span class="number">23</span>&#125;,</div><div class="line">		&#123;<span class="attr">name</span>: <span class="string">'junsu'</span>, <span class="attr">age</span>: <span class="number">25</span>&#125;</div><div class="line">	]&#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">http.createServer(app).listen(app.get(<span class="string">'port'</span>), <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'Express server listeneing on port '</span> + app.get(<span class="string">'port'</span>));</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>이 소스에서 중요한 부분은 app.post 라고 쓰여진 부분 중에서 /user/ 으로 접근하는 부분이다.</p>
+<p>client 에서 user/one 으로 접근 할 때는 req.body.name 에 이름을 받아서 검색한다. body 는 json 형식으로 {“name”: “something”} 보내주면 파싱한다.</p>
+<p>client 에서 user/list 으로 접근 할 때는 파라미터 없이 users 리스트를 전달해준다. body 는 json 형식으로 {“name”: “something”} 보내주면 파싱한다.</p>
+<p>res.send(code) 에서 code 는 일반적으로 200번이 성공이고 400대가 넘어가면 관리자가 적용해둔 에러로 처리하고 client에서 200번에 왔을 때 통신을 처리하고, 에러코드가 넘어오면 에러처리를 해주면 된다.</p>
+<h1 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h1><h1 id="1-gradle-setting"><a href="#1-gradle-setting" class="headerlink" title="1. gradle setting"></a>1. gradle setting</h1><ul>
+<li>app의 build.gradle에 다음 소스를 추가한다. 우리가 주목해야 하는 부분은 아래와 같다. 이글의 작성 시점 2017-05-19의 최신 버전 2.3.0 버전을 사용하였다.<blockquote>
+<p>compile ‘com.squareup.retrofit2:retrofit:2.3.0’<br>compile ‘com.squareup.retrofit2:converter-gson:2.3.0’</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    compileSdkVersion 25</div><div class="line">    buildToolsVersion <span class="string">"25.0.3"</span></div><div class="line">    defaultConfig &#123;</div><div class="line">        applicationId <span class="string">"com.android_dev.clucle.retrofittutor"</span></div><div class="line">        minSdkVersion 18</div><div class="line">        targetSdkVersion 25</div><div class="line">        versionCode 1</div><div class="line">        versionName <span class="string">"1.0"</span></div><div class="line">        <span class="built_in">test</span>InstrumentationRunner <span class="string">"android.support.test.runner.AndroidJUnitRunner"</span></div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            minifyEnabled <span class="literal">false</span></div><div class="line">            proguardFiles getDefaultProguardFile(<span class="string">'proguard-android.txt'</span>), <span class="string">'proguard-rules.pro'</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    compile fileTree(dir: <span class="string">'libs'</span>, include: [<span class="string">'*.jar'</span>])</div><div class="line">    androidTestCompile(<span class="string">'com.android.support.test.espresso:espresso-core:2.2.2'</span>, &#123;</div><div class="line">        exclude group: <span class="string">'com.android.support'</span>, module: <span class="string">'support-annotations'</span></div><div class="line">    &#125;)</div><div class="line">    compile <span class="string">'com.android.support:appcompat-v7:25.3.1'</span></div><div class="line">    compile <span class="string">'com.android.support.constraint:constraint-layout:1.0.2'</span></div><div class="line">    compile <span class="string">'com.squareup.retrofit2:retrofit:2.3.0'</span></div><div class="line">    compile <span class="string">'com.squareup.retrofit2:converter-gson:2.3.0'</span></div><div class="line">    <span class="built_in">test</span>Compile <span class="string">'junit:junit:4.12'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="2-example"><a href="#2-example" class="headerlink" title="2. example"></a>2. example</h1><p>우선 통신을 하는 API를 정해서 미리 정의한다.</p>
+<p>POST 명령으로 user/one을 실행하면 name을 인자로 줘서 User class에 맞는 json을 받는다. 주는 형식은 {“name”: name} 으로 전달된다</p>
+<p>POST 명령으로 user/list를 실행하면 인자 없이 Users class에 맞는 json을 받는다.</p>
+<p>@FormUrlEncoded는 json 인자를 서버에 보내줘야할 때 써준다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public interface RetrofitAPI &#123;</div><div class="line"></div><div class="line">    @POST(&quot;user/one&quot;)</div><div class="line">    @FormUrlEncoded</div><div class="line">    Call&lt;User&gt; getUser(</div><div class="line">            @Field(&quot;name&quot;) String name</div><div class="line">    );</div><div class="line"></div><div class="line">    @POST(&quot;user/list&quot;)</div><div class="line">    Call&lt;Users&gt; getUserList();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">public class User &#123;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line"></div><div class="line">    public User(String name, int age) &#123;</div><div class="line">        this.name = name;</div><div class="line">        this.age = age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public String getName() &#123;</div><div class="line">        return name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public int getAge() &#123;</div><div class="line">        return age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setName(String name) &#123;</div><div class="line">        this.name = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setAge(int age) &#123;</div><div class="line">        this.age = age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public String toString() &#123;</div><div class="line">        return (&quot;name : &quot; + name + &quot; age : &quot; + age);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class Users &#123;</div><div class="line">    public List&lt;User&gt; users;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>정의해둔 HTTP API 통신을 하기 위해서 Retrofit 의 Builder로 서버와 통신한다. 이를 편하게 하기 위해서 RetrofitHelper를 제작한다. 아래 url과 port는 내 로컬 pc의 ip와 node서버를 열어둔 포트이다. getInstance() Method를 통해 어디서나 통신을 할 수 있도록 만들고 retrofit.create에서 위에서 만든 API를 넣어주면 서버와 통신한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">public class RetrofitHelper &#123;</div><div class="line"></div><div class="line">    // server address, port</div><div class="line">    private final static String url = &quot;http://192.168.0.22&quot;;</div><div class="line">    private final static int port = 3000;</div><div class="line"></div><div class="line">    private static Retrofit retrofit;</div><div class="line"></div><div class="line">    public static RetrofitAPI getInstance() &#123;</div><div class="line">        if (retrofit == null) &#123;</div><div class="line">            retrofit = new Retrofit.Builder()</div><div class="line">                    .baseUrl(url + &quot;:&quot; + port)</div><div class="line">                    .addConverterFactory(GsonConverterFactory.create())</div><div class="line">                    .build();</div><div class="line">        &#125;</div><div class="line">        return retrofit.create(RetrofitAPI.class);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static boolean returnNetworkState(Context context) &#123;</div><div class="line">        ConnectivityManager connectivityManager =</div><div class="line">                ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));</div><div class="line">        return connectivityManager.getActiveNetworkInfo() != null &amp;&amp;</div><div class="line">                connectivityManager.getActiveNetworkInfo().isConnected();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="3-start-retrofit"><a href="#3-start-retrofit" class="headerlink" title="3. start retrofit"></a>3. start retrofit</h1><p>만들어둔 RetrofitHelper와 API로 통신하는 법이다. RetrofitHelper.getInstance().에서 Interface에 정의해둔 함수명을 적는다.</p>
+<p>RetrofitHelper.getInstance().<strong>Method(parameter)</strong>.enque(new Callback&lt;<strong>인터페이스에서 정한 받을 타입</strong>&gt;(){  <strong>여기에서 엔터 치고 명령어들을 override한다.</strong> })</p>
+<p>그러면 onResponse와 onFailure에 나오는데 onResponse는 서버에서 어떤 값이 넘어온 상태이고 onFailure는 서버에서 값이 넘어오지 않은 상태이거나, 너무 많은 요청이 들어간 등 서버에서 에러가 난 상태이다.</p>
+<p>onResponse에서 code가 에러코드가 아니지 체크하고 <strong>response.code() == 200</strong></p>
+<p>response.body()는 내부에 json파일이 들어있는지 확인한다 <strong>response.body() != null</strong></p>
+<p>만약 Model Class 여기서는 User 에 getter를 만들어 두었으면 json형식의 파일을 맞춰서 받으면 자동으로 파싱되서 들어간다. 잘 모르겠으면 소스를 위에 링크한 소스를 참고하면 편할 것이다.</p>
+<p>updateUserList에서는 updateUser와 다르게 json이 배열 형식으로 오는데 받는 json 형식이 현재 {users: [{“name”:”name1”,”age”:”age1”},{“name”:”name2”,”age”:”age2”}]}<br>배열에 담겨서 온다. 이럴 때는 response.body().users로 해주면 json의 users에 담긴 배열을 받아와서 List에 넣을 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line">public class RetrofitPresenter &#123;</div><div class="line">    private View view;</div><div class="line"></div><div class="line">    private User user;</div><div class="line">    private List&lt;User&gt; userList;</div><div class="line"></div><div class="line">    // Constructor</div><div class="line">    public RetrofitPresenter(View view) &#123;</div><div class="line">        this.view = view;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Search One User and Show View</div><div class="line">    public void updateUser(String name) &#123;</div><div class="line">        Log.e(&quot;[Client]&quot;, &quot;Too many request?&quot;);</div><div class="line">        RetrofitHelper.getInstance().getUser(name).enqueue(new Callback&lt;User&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onResponse(@NonNull Call&lt;User&gt; call, @NonNull Response&lt;User&gt; response) &#123;</div><div class="line">                if (response.code() == 200 &amp;&amp; response.body() != null) &#123;</div><div class="line">                    user = response.body();</div><div class="line">                    view.updateTextView(user.toString());</div><div class="line">                &#125; else &#123;</div><div class="line">                    onFailure(call, new Throwable(&quot;may be response something but error&quot;));</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            @Override</div><div class="line">            public void onFailure(@NonNull Call&lt;User&gt; call, @NonNull Throwable t) &#123;</div><div class="line">                Log.e(&quot;[Server]&quot;, t.getLocalizedMessage());</div><div class="line">                view.updateTextView(&quot;Error! at Search One&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Search User List and Show View</div><div class="line">    public void updateUserList() &#123;</div><div class="line">        RetrofitHelper.getInstance().getUserList().enqueue(new Callback&lt;Users&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onResponse(@NonNull Call&lt;Users&gt; call, @NonNull Response&lt;Users&gt; response) &#123;</div><div class="line">                if (response.code() == 200 &amp;&amp; response.body().users != null) &#123;</div><div class="line">                    userList = response.body().users;</div><div class="line">                    // 임시로 2번 째 사람의 이름만 출력해보자</div><div class="line">                    view.updateTextView(userList.get(1).getName());</div><div class="line">                &#125; else &#123;</div><div class="line">                    onFailure(call, new Throwable(&quot;may be response something but error&quot;));</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            @Override</div><div class="line">            public void onFailure(@NonNull Call&lt;Users&gt; call, @NonNull Throwable t) &#123;</div><div class="line">                Log.e(&quot;[Server]&quot;, t.getLocalizedMessage());</div><div class="line">                view.updateTextView(&quot;Error! at Search List&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public interface View &#123;</div><div class="line">        void updateTextView(String text);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Retrofit-REST-API-Android-후기"><a href="#Retrofit-REST-API-Android-후기" class="headerlink" title="Retrofit REST API Android 후기"></a><strong>Retrofit REST API Android 후기</strong></h2><ul>
+<li>이번에 해커톤 대회에서 새로 배워온 내용이라 써보면서 편하다고 느꼇고, 글만 봐서는 어떤 내용인지 잘 모를 것 같고 한번 써보면 쉽게 사용 할 수 있는 좋은 라이브러리 인 것 같다.</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/android/">android</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Kommentare</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://clucle.github.io/2017/05/19/Retrofit-HTTP-Android/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="hidden" name="q" value="site:clucle.github.io">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Hexo/">Hexo</a><small>1</small></li>
+  
+    <li><a href="/tags/android/">android</a><small>3</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 Dujin Jung
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
