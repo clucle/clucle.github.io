@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>bit masking | clucle&#39;s blog</title>
+  <meta name="author" content="Dujin Jung">
+  
+  <meta name="description" content="두찡의 일상">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="bit masking"/>
+  <meta property="og:site_name" content="clucle&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="clucle&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">clucle&#39;s blog</a></h1>
+  <h2><a href="/">두찡의 프로그래밍</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-06-04T16:59:03.000Z"><a href="/2017/06/05/bit-masking/">2017-06-05</a></time>
+      
+      
+  
+    <h1 class="title">bit masking</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>알고리즘 문제 중에 외판원 길찾기 문제를 풀려고하다가 비트마스크란 개념이 나오는데 그 개념을 몰라서 헷갈리는 와중에 차라리 비트마스크를 공부해보자 싶었다. 왜 길을 찾는데 비트마스크란 개념을 쓰냐면, 어떤 곳에 방문했는지 탐색할때마다 배열을 만드는건 비효율 적이니까 int값만 넘기는데 자릿수마다 어떤 마을에 방문했는지 정도로 쓸 수 있는것 이다. 대신 넘기는 자료형의 자릿수보다 크게는 안된다.</p>
+<p>백준 문제중에 기능을 한번 씩 써볼 수 있는 문제가 있어서 소스 링크를 달아둔다 <a href="https://github.com/clucle/Algorithm/blob/master/Baek/Baek_11723/bitmask_tutor.cpp" target="_blank" rel="external">link</a></p>
+<p>백준 문제에 있는 기능으로 소개를 한다</p>
+<h2 id="n번째-비트를-1로-만들기"><a href="#n번째-비트를-1로-만들기" class="headerlink" title="n번째 비트를 1로 만들기"></a><strong>n번째 비트를 1로 만들기</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">arr |= (<span class="number">1</span>&lt;&lt;index);</div></pre></td></tr></table></figure>
+<p>index가 0 일때 맨 오른쪽 비트를 가리킨다.</p>
+<p>index 번째 비트를 1로 만든다</p>
+<p>1 을 index만큼 left shift 시켜서 or 연산</p>
+<h2 id="n번째-비트를-0으로-만들기"><a href="#n번째-비트를-0으로-만들기" class="headerlink" title="n번째 비트를 0으로 만들기"></a><strong>n번째 비트를 0으로 만들기</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">arr &amp;= ~(<span class="number">1</span>&lt;&lt;index);</div></pre></td></tr></table></figure>
+<p>index 번째 비트를 0으로 만든다</p>
+<p>index위치만 0으로 하고 나머지 1로 해서 and 연산</p>
+<h2 id="n번째-비트가-1인지-확인하기"><a href="#n번째-비트가-1인지-확인하기" class="headerlink" title="n번째 비트가 1인지 확인하기"></a><strong>n번째 비트가 1인지 확인하기</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 연산자 순위 때문에 괄호 순서 중요</span></div><div class="line"><span class="keyword">if</span> ((arr &amp; (<span class="number">1</span>&lt;&lt;index)) == <span class="number">0</span>) &#123;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"0\n"</span>);</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"1\n"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>index 번째 비트만 1로 해서 &amp;연산</p>
+<p>자리가 같은곳에 1이 있다면 0이 아닌 수가 나옴</p>
+<h2 id="n번째-비트-전환하기"><a href="#n번째-비트-전환하기" class="headerlink" title="n번째 비트 전환하기"></a><strong>n번째 비트 전환하기</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">arr ^= (<span class="number">1</span>&lt;&lt;index);</div></pre></td></tr></table></figure>
+<p>index 번째 비트를 1로 만든다</p>
+<p>1 을 index만큼 left shift 시켜서 xor 연산(반전)</p>
+<h2 id="모든-비트를-1로-만들기"><a href="#모든-비트를-1로-만들기" class="headerlink" title="모든 비트를 1로 만들기"></a><strong>모든 비트를 1로 만들기</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">arr &amp;= <span class="number">0</span>;</div><div class="line">arr--;</div></pre></td></tr></table></figure>
+<p>0 과 and를 하면 0이 된다</p>
+<p>0에서 1을 빼면 모든 비트가 1이된다 (이진수 특성)</p>
+<h2 id="모든-비트를-0으로-만들기"><a href="#모든-비트를-0으로-만들기" class="headerlink" title="모든 비트를 0으로 만들기"></a><strong>모든 비트를 0으로 만들기</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">arr &amp;= <span class="number">0</span>;</div></pre></td></tr></table></figure>
+<p>0 과 and를 하면 0이 된다</p>
+<h2 id="비트-마스크-알고리즘"><a href="#비트-마스크-알고리즘" class="headerlink" title="비트 마스크 알고리즘"></a><strong>비트 마스크 알고리즘</strong></h2><ul>
+<li>이제 다시 외판원 문제를 공부해보자</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Algorithm/">Algorithm</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://clucle.github.io/2017/06/05/bit-masking/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:clucle.github.io">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Algorithm/">Algorithm</a><small>1</small></li>
+  
+    <li><a href="/tags/Hexo/">Hexo</a><small>1</small></li>
+  
+    <li><a href="/tags/android/">android</a><small>3</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 Dujin Jung
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
